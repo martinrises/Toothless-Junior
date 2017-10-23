@@ -1,9 +1,10 @@
 import pandas as pd
 from src.data.entity.OriginRecord import OriginRecord
+import src.nn.config as config
 import os
 
 
-def read_csv(path='../../data/daily_price.csv'):
+def read_csv(path=config.ROOT_PATH + '/data/daily_price.csv'):
     """
     read origin data
     :param path:
@@ -17,7 +18,7 @@ def read_csv(path='../../data/daily_price.csv'):
     return data
 
 
-def get_origin_records(path='../../data/daily_price.csv'):
+def get_origin_records(path=config.ROOT_PATH + '/data/daily_price.csv'):
     f = open(path)
     df = pd.read_csv(f)
     length = df.shape[0]
@@ -34,7 +35,7 @@ def get_origin_records(path='../../data/daily_price.csv'):
     return records
 
 
-def get_future_records(path="../../data/future/by/"):
+def get_future_records(path=config.ROOT_PATH + "/data/future/by/"):
     file_names = os.listdir(path)
     records = {}
     for f_name in file_names:
