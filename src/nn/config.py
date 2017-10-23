@@ -1,7 +1,7 @@
 import tensorflow as tf
 
-DAYS = 20
-FEATURE_SIZE = 5
+DAYS = 2
+FEATURE_SIZE = 4
 THRESHOLD = 0.15
 N_INPUT = FEATURE_SIZE * DAYS
 N_LABEL = 3

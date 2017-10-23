@@ -1,5 +1,7 @@
 import src.nn.config as config
 import tensorflow as tf
+from src.data.getter.getter import DataGetter
+import numpy as np
 
 
 def build_net(norm, on_train):
@@ -25,7 +27,7 @@ def build_net(norm, on_train):
             ema_layer = tf.train.ExponentialMovingAverage(decay=0.5)
 
             def mean_var_with_update():
-                ema_apply_op = ema.apply([fc_mean_layer, fc_var_layer])
+                ema_apply_op = ema_layer.apply([fc_mean_layer, fc_var_layer])
                 with tf.control_dependencies([ema_apply_op]):
                     return tf.identity(fc_mean_layer), tf.identity(fc_var_layer)
 
@@ -47,25 +49,15 @@ def build_net(norm, on_train):
 
     xs = tf.placeholder(dtype=tf.float32, shape=[None, config.N_INPUT])
     ys = tf.placeholder(dtype=tf.float32, shape=[None, config.N_LABEL])
-    if norm:
-        # BN for the first input
-        fc_mean, fc_var = tf.nn.moments(
-            xs,
-            axes=[0],
-        )
-
-        # apply moving average for mean and var when train on batch
-        ema = tf.train.ExponentialMovingAverage(decay=0.5)
-
-        def mean_var_with_update():
-            ema_apply_op = ema.apply([fc_mean, fc_var])
-            with tf.control_dependencies([ema_apply_op]):
-                return tf.identity(fc_mean), tf.identity(fc_var)
-
-        if on_train:
-            mean, var = mean_var_with_update()
-        else:
-            mean, var = lambda: (ema.average(fc_mean), ema.average(fc_var))
+    # add normalization on input layer
+    data_getter = DataGetter()
+    non_test_data = data_getter.get_non_test_records()
+    feature_array = [data.features for data in non_test_data]
+    mean_input = np.mean(feature_array, axis=0)
+    stddev_input = np.std(feature_array, axis=0)
+    print("input_mean = {}".format(mean_input))
+    print("stddev_input = {}".format(stddev_input))
+    xs = (xs - mean_input) / stddev_input
 
     # record inputs for every layer
     layers_inputs = [xs]
