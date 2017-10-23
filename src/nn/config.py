@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-DAYS = 2
+DAYS = 38
 FEATURE_SIZE = 4
 THRESHOLD = 0.15
 N_INPUT = FEATURE_SIZE * DAYS
@@ -12,12 +12,12 @@ BATCH_SIZE = 32
 MAX_EPOCH = 100
 ACTIVATION = tf.nn.relu
 
-ROOT_PATH = None
-SUMMARY_DIR = '../../summary'
+ROOT_PATH = "/home/liuzhf/workspace/projects/Toothless"
+SUMMARY_DIR = ROOT_PATH + '/summary'
 TRAIN_SUMMARY_DIR = SUMMARY_DIR+"/train"
 CV_SUMMARY_DIR = SUMMARY_DIR+"/cv"
 TEST_SUMMARY_DIR = SUMMARY_DIR+"/test"
-CKPT_DIR = '../../model/future/by/{}/{}/{}/'.format(FEATURE_SIZE, N_HIDDEN_LAYER, N_HIDDEN_UNIT)
+CKPT_DIR = ROOT_PATH + '/model/future/by/{}/{}/{}/{}/'.format(DAYS, FEATURE_SIZE, N_HIDDEN_LAYER, N_HIDDEN_UNIT)
 ACTUAL_CKPT_DIR = CKPT_DIR
 
 TEST_DATA_SIZE = 2004
