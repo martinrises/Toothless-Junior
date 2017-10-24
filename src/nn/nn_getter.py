@@ -10,6 +10,7 @@ def build_net(norm, on_train):
         biases = tf.Variable(tf.zeros([1, output_size]) + 0.1, dtype=tf.float32)
 
         wx_plus_b = tf.matmul(inputs, weights) + biases
+        wx_plus_b = tf.nn.dropout(wx_plus_b, keep_prob=config.KEEP_PROB)
 
         # normalize fully connected product
         if is_norm:
