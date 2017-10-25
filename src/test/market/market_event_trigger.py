@@ -1,6 +1,7 @@
 from src.test.market.quanter import Quanter
 import src.test.market.quanter as quanter
 import numpy as np
+import src.nn.config as config
 
 MARKET_UP = 0
 MARKET_SHAKE = 1
@@ -27,6 +28,8 @@ class MarketEventTrigger:
         self.finish(order_id, datas[0].date, datas[-1].date, len(datas), datas[-1].close)
 
     def on_market_event(self, state, target_state, date, close, next_day_open, index):
+        if not config.FIX_MISTAKE:
+            return
         if self.__quanter.state == quanter.QUANTER_STATE_BUY and state == MARKET_UP:
             if index - self.__quanter.last_op_index >= DAYS_THRESHOLD and self.__quanter.last_op_price <= close:  # check whether if bought more than 3 days and price is lower than itself 3 days ago
                 print("buy wrong")

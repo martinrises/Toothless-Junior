@@ -22,3 +22,5 @@ CKPT_DIR = ROOT_PATH + '/model/future/by/{}/{}/{}/{}/'.format(DAYS, FEATURE_SIZE
 ACTUAL_CKPT_DIR = CKPT_DIR
 
 TEST_DATA_SIZE = 2028
+
+FIX_MISTAKE = False
