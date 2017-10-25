@@ -11,7 +11,7 @@ class MarketEventTrigger:
     __last_market_state = 1
     __quanter = Quanter()
 
-    def trigger_market_event(self, predictions, datas):
+    def trigger_market_event(self, order_id,  predictions, datas):
         for i in range(len(datas) - 1):
             prediction = predictions[i]
             data = datas[i]
@@ -23,7 +23,7 @@ class MarketEventTrigger:
                 self.on_market_state_change(self.__last_market_state, state, data.date, next_day_data.open)
 
             self.__last_market_state = state
-        self.finish(datas[-1].date, datas[-1].close)
+        self.finish(order_id, datas[0].date, datas[-1].date, len(datas), datas[-1].close)
 
     def on_market_event(self, state, target_state, date, close, next_day_open):
         # print("{}, prediction = {}, target_state = {}, close = {}".format(date, state, target_state, close))
@@ -43,5 +43,8 @@ class MarketEventTrigger:
         else:
             self.__quanter.quit(date, next_day_open)
 
-    def finish(self, date, close):
-        self.__quanter.finish(date, close)
+    def finish(self, order_id, start_date, end_date, days, close):
+        self.__quanter.finish(order_id, start_date, end_date, days, close)
+
+    def trigger_finish_all(self):
+        self.__quanter.finish_all()

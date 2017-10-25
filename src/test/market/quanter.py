@@ -8,6 +8,8 @@ class Quanter:
     __money = __initial_money
     __future = 0
     __ops = [('init', __initial_money)]
+    __gains = []
+    __days = []
 
     def assets(self, price):
         return self.__money + price * self.__future
@@ -44,9 +46,19 @@ class Quanter:
         elif self.__future < 0:
             return QUANTER_STATE_SELL
 
-    def finish(self, date, close):
-        print("finish on {}, assets = {}, gain = {}".format(date, self.assets(close), (self.assets(close) - self.__initial_money) / self.__initial_money))
+    def finish(self, order_id, start_date, end_date, days, close):
+        gain = (self.assets(close) - self.__initial_money) / self.__initial_money
+        self.__days.append(days)
+        self.__gains.append(gain)
+        print("{}, {} - {}, days = {}, assets = {}, gain = {}".format(order_id, start_date, end_date, days, self.assets(close), gain))
         print("---------------------------------------------------------------------------------------------------")
         self.__money = self.__initial_money
         self.__future = 0
         self.__ops = [('init', self.__initial_money)]
+
+    def finish_all(self):
+        gain = 1
+        for i in self.__gains:
+            gain *= (1 + i)
+        days_sum = sum(self.__days)
+        print("{} days, gain {}".format(days_sum, gain))

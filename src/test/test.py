@@ -27,7 +27,8 @@ def test():
         trigger = MarketEventTrigger()
         # get test data
         test_data_list = data_getter.get_test_data_list()
-        for test_data_set in test_data_list:
+        for test_data_tuple in test_data_list:
+            test_data_set = test_data_tuple[1]
             if len(test_data_set) == 0:
                 continue
 
@@ -36,7 +37,8 @@ def test():
                 targets: np.reshape(data_getter.get_labels(test_data_set), [len(test_data_set), config.N_LABEL])
             })
 
-            trigger.trigger_market_event(predictions, test_data_set)
+            trigger.trigger_market_event(test_data_tuple[0], predictions, test_data_set)
+        trigger.trigger_finish_all()
 
 
 test()

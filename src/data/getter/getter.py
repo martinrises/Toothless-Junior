@@ -20,7 +20,7 @@ class DataGetter:
     def get_test_data_list(self):
         if self.__test_data_list is None:
             origin_records = data_getter.get_future_records()
-            self.__test_data_list = data_labeler.get_future_feature_record(origin_records, config.DAYS, config.THRESHOLD)[58:]
+            self.__test_data_list = data_labeler.get_future_feature_record_with_names(origin_records, config.DAYS, config.THRESHOLD)[58:]
         return self.__test_data_list
 
     def get_test_data(self):
