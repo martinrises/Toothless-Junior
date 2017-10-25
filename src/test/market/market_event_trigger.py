@@ -1,6 +1,6 @@
 from src.test.market.quanter import Quanter
-import tensorflow as tf
 import src.test.market.quanter as quanter
+import numpy as np
 
 MARKET_UP = 0
 MARKET_SHAKE = 1
@@ -16,8 +16,8 @@ class MarketEventTrigger:
             prediction = predictions[i]
             data = datas[i]
             next_day_data = datas[i+1]
-            state = tf.argmax(prediction, 1)
-            self.on_market_event(state, data.date, next_day_data.open)
+            state = np.argmax(prediction)
+            self.on_market_event(state, np.argmax(data.label), data.date, data.close, next_day_data.open)
 
             if self.__last_market_state != state:
                 self.on_market_state_change(self.__last_market_state, state, data.date, next_day_data.open)
@@ -25,7 +25,8 @@ class MarketEventTrigger:
             self.__last_market_state = state
         self.finish(datas[-1].date, datas[-1].close)
 
-    def on_market_event(self, state, date, next_day_open):
+    def on_market_event(self, state, target_state, date, close, next_day_open):
+        # print("{}, prediction = {}, target_state = {}, close = {}".format(date, state, target_state, close))
         pass
 
     def reset_state(self, date, price):

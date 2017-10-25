@@ -16,13 +16,13 @@ class Quanter:
         temp_future = self.__money // price
         self.__future += temp_future
         self.__money -= price * temp_future
-        self.__ops[date] = self.assets(price)
+        print("buy on {}, price = {}".format(date, price))
 
     def sell(self, date, price):
         temp_future = self.__money // price
         self.__future -= temp_future
         self.__money += temp_future * price
-        self.__ops[date] = self.assets(price)
+        print("sell on {}, price = {}".format(date, price))
 
     def quit(self, date, price):
         self.__money += self.__future * price
@@ -47,3 +47,6 @@ class Quanter:
     def finish(self, date, close):
         print("finish on {}, assets = {}, gain = {}".format(date, self.assets(close), (self.assets(close) - self.__initial_money) / self.__initial_money))
         print("---------------------------------------------------------------------------------------------------")
+        self.__money = self.__initial_money
+        self.__future = 0
+        self.__ops = [('init', self.__initial_money)]
