@@ -2,6 +2,11 @@ QUANTER_STATE_BUY = 0
 QUANTER_STATE_QUIT = 1
 QUANTER_STATE_SELL = 2
 
+DATE_INDEX = 0
+ASSETS_INDEX = 1
+OP_INDEX = 2
+DAY_INDEX = 3
+PRICE_INDEX = 4
 
 class Quanter:
     __initial_money = 100000
@@ -14,27 +19,29 @@ class Quanter:
     def assets(self, price):
         return self.__money + price * self.__future
 
-    def buy(self, date, price):
+    def buy(self, date, price, index):
         temp_future = self.__money // price
         self.__future += temp_future
         self.__money -= price * temp_future
+        self.__ops[len(self.__ops):] = [[date, self.assets(price), QUANTER_STATE_BUY, index, price]]
         print("buy on {}, price = {}".format(date, price))
 
-    def sell(self, date, price):
+    def sell(self, date, price, index):
         temp_future = self.__money // price
         self.__future -= temp_future
         self.__money += temp_future * price
+        self.__ops[len(self.__ops):] = [[date, self.assets(price), QUANTER_STATE_SELL, index, price]]
         print("sell on {}, price = {}".format(date, price))
 
-    def quit(self, date, price):
+    def quit(self, date, price, index):
         self.__money += self.__future * price
         self.__future = 0
-        self.__ops[len(self.__ops):] = [[date, self.assets(price)]]
+        self.__ops[len(self.__ops):] = [[date, self.assets(price), QUANTER_STATE_QUIT, index, price]]
 
         curr_op = self.__ops[-1]
         last_op = self.__ops[-2]
         print("quit on {}, assets = {}, gain = {}".format(
-            date, self.assets(price), ((curr_op[1] - last_op[1]) / last_op[1])
+            date, self.assets(price), ((curr_op[ASSETS_INDEX] - last_op[ASSETS_INDEX]) / last_op[ASSETS_INDEX])
         ))
 
     @property
@@ -62,3 +69,11 @@ class Quanter:
             gain *= (1 + i)
         days_sum = sum(self.__days)
         print("{} days, gain {}".format(days_sum, gain))
+
+    @property
+    def last_op_index(self):
+        return self.__ops[-1][DAY_INDEX]
+
+    @property
+    def last_op_price(self):
+        return self.__ops[-1][PRICE_INDEX]
