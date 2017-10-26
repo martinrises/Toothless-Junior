@@ -9,7 +9,7 @@ from src.test.market.market_event_trigger import MarketEventTrigger
 def test():
 
     # conduct neural network
-    global_step, inputs, outputs, targets = nn_getter.build_net(True, True)
+    global_step, inputs, outputs, targets = nn_getter.build_net(False, False)
 
     # checkpoints
     saver = tf.train.Saver()

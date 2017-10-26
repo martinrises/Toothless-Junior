@@ -14,7 +14,7 @@ def get_random_segment(records, batch_size=config.BATCH_SIZE):
 def train():
 
     # conduct neural network
-    global_step, inputs, outputs, targets = nn_getter.build_net(True, True)
+    global_step, inputs, outputs, targets = nn_getter.build_net(False, True)
 
     # training fields
     loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=targets, logits=outputs))
