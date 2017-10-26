@@ -77,3 +77,7 @@ class Quanter:
     @property
     def last_op_price(self):
         return self.__ops[-1][PRICE_INDEX]
+
+    @property
+    def last_op_asset(self):
+        return self.__ops[-1][ASSETS_INDEX]

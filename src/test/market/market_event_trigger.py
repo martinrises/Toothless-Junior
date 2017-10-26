@@ -8,6 +8,8 @@ MARKET_SHAKE = 1
 MARKET_DOWN = 2
 
 DAYS_THRESHOLD = 3
+ASSETS_THRESHOLD = -0.05
+
 
 class MarketEventTrigger:
     __last_market_state = 1
@@ -28,15 +30,23 @@ class MarketEventTrigger:
         self.finish(order_id, datas[0].date, datas[-1].date, len(datas), datas[-1].close)
 
     def on_market_event(self, state, target_state, date, close, next_day_open, index):
+        print("{}, {}, state = {}, prediction = {}".format(date, close, target_state, state))
         if not config.FIX_MISTAKE:
             return
-        if self.__quanter.state == quanter.QUANTER_STATE_BUY and state == MARKET_UP:
-            if index - self.__quanter.last_op_index >= DAYS_THRESHOLD and self.__quanter.last_op_price <= close:  # check whether if bought more than 3 days and price is lower than itself 3 days ago
-                print("buy wrong")
-                self.__quanter.quit(date, next_day_open, index)
-        elif self.__quanter.state == quanter.QUANTER_STATE_SELL and state == MARKET_DOWN:
-            if index - self.__quanter.last_op_index >= DAYS_THRESHOLD and self.__quanter.last_op_price >= close:  # check whether if sold more than 3 days and price is higher than itself 3 days ago
-                print("sell wrong")
+
+        if config.FIX_MISTAKE_BY_DAY_THRESHOLD:
+            if self.__quanter.state == quanter.QUANTER_STATE_BUY and state == MARKET_UP:
+                if index - self.__quanter.last_op_index >= DAYS_THRESHOLD and self.__quanter.last_op_price <= close:  # check whether if bought more than 3 days and price is lower than itself 3 days ago
+                    print("buy wrong")
+                    self.__quanter.quit(date, next_day_open, index)
+            elif self.__quanter.state == quanter.QUANTER_STATE_SELL and state == MARKET_DOWN:
+                if index - self.__quanter.last_op_index >= DAYS_THRESHOLD and self.__quanter.last_op_price >= close:  # check whether if sold more than 3 days and price is higher than itself 3 days ago
+                    print("sell wrong")
+                    self.__quanter.quit(date, next_day_open, index)
+
+        if config.FIX_MISTAKE_BY_DAY_THRESHOLD:
+            if self.__quanter.state != quanter.QUANTER_STATE_QUIT and ((self.__quanter.assets(close) - self.__quanter.last_op_asset) / self.__quanter.last_op_asset <= ASSETS_THRESHOLD):
+                print("assets threshold triggered")
                 self.__quanter.quit(date, next_day_open, index)
 
     def reset_state(self, date, price, index):
